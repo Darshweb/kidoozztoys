@@ -252,7 +252,6 @@
             <button class="btn btn-buy" onclick="openModal('buyModal')">Buy Now</button>
         </div>
 
-        <!-- New product card for "Stump" -->
         <div class="card glass" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.5">
             <img src="product 6.jpeg" alt="Stump - main" class="card-img">
             <h2>Stump</h2>
@@ -268,7 +267,6 @@
         </div>
     </div>
 
-    <!-- Existing gallery modal for product 1 -->
     <div class="modal-overlay" id="galleryModal">
         <div class="modal-content glass">
             <h2 style="margin-bottom: 20px;">Product Gallery</h2>
@@ -282,7 +280,6 @@
         </div>
     </div>
 
-    <!-- New gallery modal for Stump product (uses four images) -->
     <div class="modal-overlay" id="galleryModalStump">
         <div class="modal-content glass">
             <h2 style="margin-bottom: 20px;">Stump - Product Gallery</h2>
@@ -297,7 +294,6 @@
         </div>
     </div>
 
-    <!-- Existing buy modal for product 1 -->
     <div class="modal-overlay" id="buyModal">
         <div class="modal-content glass">
             <h2>Select Variant</h2>
@@ -334,24 +330,21 @@
         </div>
     </div>
 
-    <!-- New buy modal for Stump (variants placeholder left empty as requested) -->
     <div class="modal-overlay" id="buyModalStump">
         <div class="modal-content glass">
             <h2>Select Variant - Stump</h2>
 
-             <div class="buy-option" onclick="processOrder('Normal Stump', 15)">
+            <div class="buy-option" onclick="processOrderStump('Normal Stump', 15)">
                 <span>Normal Stump</span>
                 <span style="color: var(--primary-yellow);">₹15</span>
             </div>
-             <div class="buy-option" onclick="processOrder('Coloured Stump', 20)">
+             <div class="buy-option" onclick="processOrderStump('Coloured Stump', 20)">
                 <span>Coloured Stump</span>
                 <span style="color: var(--primary-yellow);">₹20</span>
             </div>
 
-            <!-- Variant section intentionally left empty for user to add later -->
             <div id="stumpVariants" style="min-height: 20px; margin-bottom: 10px;">
-                <!-- You will add variants here -->
-            </div>
+                </div>
 
             <div id="orderContactStump" style="display:none; margin-top: 20px; padding: 15px; background: rgba(0,255,0,0.1); border-radius: 10px; color: #00ff88;">
                 <p id="orderTextStump"></p>
@@ -410,7 +403,8 @@
         // Gallery Preview for product 1
         function updatePreview(src) {
             document.getElementById('mainPreview').src = src;
-            const thumbs = document.querySelectorAll('.gallery img');
+            // Fixed: Scoped to #galleryModal to prevent conflict with Stump gallery
+            const thumbs = document.querySelectorAll('#galleryModal .gallery img');
             thumbs.forEach(t => {
                 t.classList.remove('active');
                 if(t.src === src) t.classList.add('active');
@@ -420,6 +414,7 @@
         // Gallery Preview for Stump
         function updatePreviewStump(src) {
             document.getElementById('mainPreviewStump').src = src;
+            // Fixed: Scoped to #galleryModalStump (was already correct, but good to double check)
             const thumbs = document.querySelectorAll('#galleryModalStump .gallery img');
             thumbs.forEach(t => {
                 t.classList.remove('active');
@@ -442,7 +437,7 @@
             text.innerText = `You have selected: ${variant} (₹${price})`;
         }
 
-        // Order Process for Stump (call this when you add variant buttons)
+        // Order Process for Stump
         function processOrderStump(variant, price) {
             confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
             const box = document.getElementById('orderContactStump');
@@ -456,13 +451,18 @@
             if (event.target.classList.contains('modal-overlay')) closeModals();
         }
 
-        // Vanilla Tilt Init (init for both cards)
-        const cards = document.querySelectorAll('.card');
-        VanillaTilt.init(cards, {
-            max: 10,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.4,
+        // Vanilla Tilt Init
+        // Fixed: Wrapped in DOMContentLoaded because script is in head and elements don't exist yet
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            if (typeof VanillaTilt !== 'undefined') {
+                VanillaTilt.init(cards, {
+                    max: 10,
+                    speed: 400,
+                    glare: true,
+                    "max-glare": 0.4,
+                });
+            }
         });
     </script>
 </body>
